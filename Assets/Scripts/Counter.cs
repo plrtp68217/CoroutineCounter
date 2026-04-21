@@ -1,14 +1,31 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
 public class Counter : MonoBehaviour
 {
-    [SerializeField] InputService _inputService;
+    [SerializeField] private InputService _inputService;
+    [SerializeField] private float _delay = 0.5f;
 
-    private float _value = 0;
+    private int _value = 0;
     private Coroutine _coroutine;
+    private bool _enabled;
 
-    private void HandleMouseButtonClick()
+    public Action<float> ValueChanged;
+
+    private void OnEnable()
+    {
+        _inputService.Pressed += OnPressed;
+        _enabled = true;
+    }
+
+    private void OnDisable()
+    {
+        _inputService.Pressed -= OnPressed;
+        _enabled = false;
+    }
+
+    private void OnPressed()
     {
         if (_coroutine != null)
         {
@@ -23,21 +40,13 @@ public class Counter : MonoBehaviour
 
     private IEnumerator DisplayCounterValue()
     {
-        while (true)
+        WaitForSeconds wait = new(_delay);
+
+        while (_enabled)
         {
-            Debug.Log(_value++);
+            ValueChanged?.Invoke(_value++);
 
-            yield return new WaitForSeconds(0.5f);
+            yield return wait;
         }
-    }
-
-    private void OnEnable()
-    {
-        _inputService.OnLeftMouseButtonClick += HandleMouseButtonClick;
-    }
-
-    private void OnDisable()
-    {
-        _inputService.OnLeftMouseButtonClick -= HandleMouseButtonClick;
     }
 }

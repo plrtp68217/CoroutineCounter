@@ -3,17 +3,17 @@ using UnityEngine;
 
 public class InputService : MonoBehaviour
 {
-    public const int LeftMouseButtonCode = 0;
+    public const int PressCode = 0;
 
-    public Action OnLeftMouseButtonClick;
+    public Action Pressed;
 
     private void Update()
     {
-        bool LeftMouseButtonIsClicked = Input.GetMouseButtonDown(LeftMouseButtonCode);
+        bool isPressed = Input.GetMouseButtonDown(PressCode);
 
-        if (LeftMouseButtonIsClicked)
+        if (isPressed)
         {
-            OnLeftMouseButtonClick?.Invoke();
+            Pressed?.Invoke();
         }
     }
 }
